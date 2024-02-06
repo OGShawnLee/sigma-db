@@ -17,6 +17,18 @@ struct Token {
     println("  value: " + value);
     println("}");
   }
+
+  bool is_given_marker(Marker marker) const {
+    return kind == Kind::MARKER && name == get_marker_name(marker);
+  }
+
+  bool is_given_kind(Kind kind) const {
+    return this->kind == kind;
+  }
+
+  bool is_given_kind(Kind kind_a, Kind kind_b) const {
+    return this->kind == kind_a || this->kind == kind_b;
+  }
 };
 
 class Lexer {
@@ -69,6 +81,15 @@ class Lexer {
   }
 
   public:
+    static std::vector<Token> lex_file(std::string file_name) {
+      std::vector<Token> collection;
+      each_line(file_name, [&collection](std::string line) {
+        std::vector<Token> tokens = lex_line(line);
+        collection.insert(collection.end(), tokens.begin(), tokens.end());
+      });
+      return collection;
+    }
+    
     static std::vector<Token> lex_line(std::string line) {
       std::vector<Token> collection;
       std::string buffer;

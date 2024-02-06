@@ -17,3 +17,9 @@ insert Person {
   age 21
   is_married false
 }
+
+insert Country {
+  name "China"
+  continent "Asia"
+  population 1423
+}

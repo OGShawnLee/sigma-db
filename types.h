@@ -15,6 +15,11 @@ std::map<std::string, Command> COMMAND_KEY = {
   {"insert", Command::INSERT},
 };
 
+std::map<Command, std::string> COMMAND_NAME = {
+  {Command::DEFINE, "define"},
+  {Command::INSERT, "insert"},
+};
+
 bool is_command(std::string command) {
   return COMMAND_KEY.count(command) > 0;
 }
@@ -25,6 +30,10 @@ Command get_command(std::string buffer) {
   }
 
   throw std::runtime_error("Invalid Command: " + buffer);
+}
+
+std::string get_command_name(Command command) {
+  return COMMAND_NAME.at(command);
 }
 
 bool is_entity(std::string buffer) {
@@ -59,11 +68,25 @@ enum class Literal {
   STRING,
 };
 
+std::map<std::string, Literal> LITERAL_KEY = {
+  {"Boolean Literal", Literal::BOOL},
+  {"Integer Literal", Literal::INT},
+  {"String Literal", Literal::STRING},
+};
+
 std::map<Literal, std::string> LITERAL_NAME = {
   {Literal::BOOL, "Boolean Literal"},
   {Literal::INT, "Integer Literal"},
   {Literal::STRING, "String Literal"},
 };
+
+Literal get_literal(std::string name) {
+  if (LITERAL_KEY.count(name) > 0) {
+    return LITERAL_KEY.at(name);
+  }
+
+  throw std::runtime_error("Invalid Literal: " + name);
+}
 
 std::string get_literal_name(Literal literal) {
   return LITERAL_NAME.at(literal);
@@ -129,6 +152,12 @@ std::map<Type, std::string> TYPE_NAME = {
   {Type::STRING, "String"},
 };
 
+std::map<Literal, std::string> LITERAL_TO_TYPE = {
+  {Literal::BOOL, "bool"},
+  {Literal::INT, "int"},
+  {Literal::STRING, "str"},
+};
+
 bool is_type(std::string type) {
   return TYPE_KEY.count(type) > 0;
 }
@@ -143,6 +172,11 @@ Type get_type(std::string buffer) {
 
 std::string get_type_name(std::string buffer) {
   return TYPE_NAME.at(get_type(buffer));
+}
+
+std::string get_infered_type(std::string name) {
+  Literal literal = get_literal(name);
+  return LITERAL_TO_TYPE.at(literal);
 }
 
 #endif 

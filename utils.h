@@ -13,11 +13,38 @@ struct Peek {
 	size_t index;
 };
 
+template <typename T>
+Peek<T> peek(
+	std::vector<T> stream,
+	size_t index,
+	std::function<bool(T&)> is_valid_node,
+	std::function<std::runtime_error()> handle_error
+) {
+	if (index + 1 >= stream.size()) {
+		throw std::runtime_error("Unterminated Stream");
+	}
+
+	T &next = stream[index + 1];
+	if (is_valid_node(next)) {
+		return Peek<T> { next, index + 1 };
+	}
+
+	throw handle_error();
+}
+
 std::string get_string(std::string prompt) {
 	std::cout << prompt;
 	std::string str;
 	getline(std::cin, str);
 	return str;
+}
+
+std::string get_indentation(size_t indentation) {
+	std::string indent = "";
+	for (size_t i = 0; i < indentation; i++) {
+		indent += "  ";
+	}
+	return indent;
 }
 
 bool is_whitespace(char token);
