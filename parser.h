@@ -22,7 +22,7 @@ class Property {
 
     static Peek<Property> parse(std::vector<Token> collection, size_t index) {
       if (collection[index].kind != Kind::PROPERTY) {
-        throw std::runtime_error("Expecting Property");
+        throw collection[index].get_error("Expecting Property");
       }
 
       auto next = peek<Token>(
@@ -31,8 +31,8 @@ class Property {
         [](Token &token) { 
           return token.is_given_kind(Kind::TYPE, Kind::LITERAL); 
         },
-        []() { 
-          return std::runtime_error("Expecting Type or Literal"); 
+        [](Token &token) {
+          return token.get_error("Expecting Type or Literal"); 
         }
       );
 
@@ -71,7 +71,7 @@ class Parser {
     Token command = collection[index];
 
     if (command.kind != Kind::COMMAND) {
-      throw std::runtime_error("Expecting Command");
+      throw command.get_error("Expecting Command");
     }
     
     auto entity_peek = peek<Token>(
@@ -80,8 +80,8 @@ class Parser {
       [](Token &token) { 
         return token.kind == Kind::ENTITY; 
       },
-      []() { 
-        return std::runtime_error("Expecting Entity"); 
+      [](Token &token) {
+        return token.get_error("Expecting Entity"); 
       }
     );
 
@@ -91,8 +91,8 @@ class Parser {
       [](Token &token) { 
         return token.is_given_marker(Marker::LEFT_CURLY_BRACE); 
       },
-      []() { 
-        return std::runtime_error("Expecting Left Curly Brace"); 
+      [](Token &token) {
+        return token.get_error("Expecting Left Curly Brace"); 
       }
     );
 
@@ -114,7 +114,7 @@ class Parser {
       i = property_peek.index;
     }
 
-    throw std::runtime_error("Unterminated Statement");
+    throw command.get_error("Unterminated Statement");
   }
 
   public:

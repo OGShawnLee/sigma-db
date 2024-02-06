@@ -23,3 +23,7 @@ insert Country {
   continent "Asia"
   population 1423
 }
+
+insert Country {
+  name "Russia" continent "Europe" population 143
+}

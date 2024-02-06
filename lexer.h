@@ -8,6 +8,7 @@ struct Token {
   Kind kind;
   std::string name;
   std::string value;
+  std::string line;
 
   void print() const {
     println(get_kind_name(kind) + " {");
@@ -16,6 +17,11 @@ struct Token {
     }
     println("  value: " + value);
     println("}");
+  }
+
+  std::runtime_error get_error(std::string message) {
+    println("error at: " + line);
+    return std::runtime_error(message + " found: " + value);
   }
 
   bool is_given_marker(Marker marker) const {
@@ -103,6 +109,7 @@ class Lexer {
           if (is_whitespace(buffer)) continue;
 
           Token token = handle_buffer(buffer);
+          token.line = line;
           collection.push_back(token);
           buffer = "";
 
@@ -114,6 +121,7 @@ class Lexer {
 
           if (is_whitespace(buffer) == false) {
             Token token = handle_buffer(buffer);
+            token.line = line;
             collection.push_back(token);
             buffer = "";
           }
@@ -121,6 +129,7 @@ class Lexer {
           switch (marker) {
             case Marker::DOUBLE_QUOTE: {
               Peek<Token> str_peek = get_str_literal(line, i);
+              str_peek.node.line = line;
               collection.push_back(str_peek.node);
               i = str_peek.index;
             } break;
@@ -129,6 +138,7 @@ class Lexer {
               token.kind = Kind::MARKER;
               token.name = get_marker_name(marker);
               token.value = character;
+              token.line = line;
               collection.push_back(token);
               break;
           }

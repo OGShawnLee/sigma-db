@@ -18,7 +18,7 @@ Peek<T> peek(
 	std::vector<T> stream,
 	size_t index,
 	std::function<bool(T&)> is_valid_node,
-	std::function<std::runtime_error()> handle_error
+	std::function<std::runtime_error(T&)> handle_error
 ) {
 	if (index + 1 >= stream.size()) {
 		throw std::runtime_error("Unterminated Stream");
@@ -29,7 +29,7 @@ Peek<T> peek(
 		return Peek<T> { next, index + 1 };
 	}
 
-	throw handle_error();
+	throw handle_error(next);
 }
 
 std::string get_string(std::string prompt) {
