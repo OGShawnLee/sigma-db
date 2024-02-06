@@ -1,0 +1,17 @@
+define Person {
+  name str
+  country str
+  age int
+  is_married bool
+}
+
+define Country {
+  name str
+  continent str
+  population int
+}
+
+insert Person {
+  age 21
+  is_married false
+}
