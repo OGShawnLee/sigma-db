@@ -105,7 +105,7 @@ class Parser {
       Token token = collection[i];
 
       if (token.is_given_marker(Marker::RIGHT_CURLY_BRACE)) {
-        peek.index = i + 1;
+        peek.index = i;
         return peek;
       }
 
