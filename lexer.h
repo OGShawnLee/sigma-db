@@ -20,6 +20,30 @@ struct Token {
 };
 
 class Lexer {
+  static Peek<Token> get_str_literal(std::string line, size_t index) {
+    std::string buffer = "";
+
+    for (size_t i = index + 1; i < line.length(); i++) {
+      char character = line[i];
+
+      if (is_marker(character)) {
+        Marker marker = get_marker(character);
+
+        if (marker == Marker::DOUBLE_QUOTE) {
+          Token token;
+          token.kind = Kind::LITERAL;
+          token.name = get_literal_name(Literal::STRING);
+          token.value = buffer;
+          return Peek<Token> { token, i };
+        }
+      }
+
+      buffer += character;
+    }
+
+    throw std::runtime_error("Unterminated String Literal");
+  }
+
   static Token handle_buffer(std::string buffer) {
     Token token;
     token.value = buffer;
@@ -74,6 +98,11 @@ class Lexer {
           }
 
           switch (marker) {
+            case Marker::DOUBLE_QUOTE: {
+              Peek<Token> str_peek = get_str_literal(line, i);
+              collection.push_back(str_peek.node);
+              i = str_peek.index;
+            } break;
             default:
               Token token;
               token.kind = Kind::MARKER;

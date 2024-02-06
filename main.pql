@@ -12,6 +12,8 @@ define Country {
 }
 
 insert Person {
+  name "Shawn Lee"
+  country "China"
   age 21
   is_married false
 }

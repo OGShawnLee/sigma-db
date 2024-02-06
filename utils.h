@@ -7,6 +7,12 @@
 #include <string>
 #include <vector>
 
+template <typename T>
+struct Peek {
+	T node;
+	size_t index;
+};
+
 std::string get_string(std::string prompt) {
 	std::cout << prompt;
 	std::string str;
