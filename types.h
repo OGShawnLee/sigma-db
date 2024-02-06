@@ -8,16 +8,19 @@
 enum class Command {
   DEFINE,
   INSERT,
+  SELECT
 };
 
 std::map<std::string, Command> COMMAND_KEY = {
   {"define", Command::DEFINE},
   {"insert", Command::INSERT},
+  {"select", Command::SELECT},
 };
 
 std::map<Command, std::string> COMMAND_NAME = {
   {Command::DEFINE, "define"},
   {Command::INSERT, "insert"},
+  {Command::SELECT, "select"},
 };
 
 bool is_command(std::string command) {

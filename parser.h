@@ -16,11 +16,13 @@ class Property {
       if (is_whitespace(value) == false) {
         println(indent + "  value: " + value);
       }
-      println(indent + "  type: " + type);
+      if (is_whitespace(type) == false) {
+        println(indent + "  type: " + type);
+      }
       println(indent + "}");
     }
 
-    static Peek<Property> parse(std::vector<Token> collection, size_t index) {
+    static Peek<Property> parse(std::vector<Token> collection, size_t index, Command command) {
       if (collection[index].kind != Kind::PROPERTY) {
         throw collection[index].get_error("Expecting Property");
       }
@@ -28,7 +30,15 @@ class Property {
       auto next = peek<Token>(
         collection,
         index,
-        [](Token &token) { 
+        [&command](Token &token) {
+          if (command == Command::SELECT) {
+            if (token.is_given_marker(Marker::RIGHT_CURLY_BRACE)) {
+              return true;
+            }
+
+            return token.is_given_kind(Kind::PROPERTY, Kind::LITERAL);
+          }
+
           return token.is_given_kind(Kind::TYPE, Kind::LITERAL); 
         },
         [](Token &token) {
@@ -40,11 +50,16 @@ class Property {
       peek.node.name = collection[index].value;
       peek.index = next.index;
 
+      if (next.node.is_given_kind(Kind::MARKER, Kind::PROPERTY)) {
+        return peek;
+      }
+
       if (next.node.kind == Kind::TYPE) {
         peek.node.type = next.node.value;
         return peek;
       }
 
+      // LITERAL 
       peek.node.value = next.node.value;
       peek.node.type = get_infered_type(next.node.name);
       return peek;
@@ -109,7 +124,7 @@ class Parser {
         return peek;
       }
 
-      Peek<Property> property_peek = Property::parse(collection, i);
+      Peek<Property> property_peek = Property::parse(collection, i, peek.node.command);
       peek.node.properties.push_back(property_peek.node);
       i = property_peek.index;
     }

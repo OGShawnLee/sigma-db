@@ -27,3 +27,9 @@ insert Country {
 insert Country {
   name "Russia" continent "Europe" population 143
 }
+
+select Country { 
+  name 
+  continent 
+  planet "Earth" 
+}
